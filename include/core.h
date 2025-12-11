@@ -23,8 +23,8 @@
 ***/
 
 #pragma once
-#ifndef _CONN_H_
-#define _CONN_H_
+#ifndef _CORE_H_
+#define _CORE_H_
 
 #include <chrono>
 #include <cstdint>
@@ -66,11 +66,11 @@ namespace cat::core {
 	/*
 	 * Initializes and creates an ENet client host for connecting to a remote server.
 	 *
-	 * @param _Host    The target server's hostname or IP address.
+	 * @param _Server  The target server's hostname or IP address.
 	 * @param _Port    The target server's port number.
 	 * @param _Channel The number of channels allocated for communication with the server.
 	 */
-	void Core_enet_client_create(const std::string_view _Host, std::uint32_t _Port, std::uint32_t _Channel);
+	void Core_enet_client_create(const std::string_view _Server, std::uint32_t _Port, std::uint32_t _Channel);
 
 	/**
 	 * Sends a packet to a specified ENet peer over a given channel.
@@ -112,4 +112,4 @@ namespace cat::core {
 	 */
 	void Core_enet_pullevent(std::chrono::milliseconds _Timeout);
 }
-#endif // ^^^ !_CONN_H_
+#endif // ^^^ !_CORE_H_
