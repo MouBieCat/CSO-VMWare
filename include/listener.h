@@ -30,7 +30,7 @@
 #include <cstdint>
 #include <functional>
 
-namespace cat {
+namespace cat::core {
 	/*
 	 * Represents a simplified network packet received from or sent to a peer.
 	 * Encapsulates the peer reference, a pointer to the raw data, and the length of the data.
@@ -67,17 +67,6 @@ namespace cat {
 	 *                  Must not be null.
 	 */
 	void InstallListener(listen_interface _Protocol) noexcept;
-
-	/*
-	 * Retrieves the currently installed packet handler.
-	 *
-	 * If no handler has been installed, this function returns nullptr.
-	 * The caller should check the returned value before use.
-	 *
-	 * @return The installed packet_handler interface, or nullptr if
-	 *         no handler has been registered.
-	 */
-	[[nodiscard]] listen_interface LocateListener() noexcept;
 }
 
 #endif // ^^^ !_LISTENER_H_

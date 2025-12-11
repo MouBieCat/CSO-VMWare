@@ -62,9 +62,6 @@
     <ClCompile Include="src\core.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\listener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="extern\enet\callbacks.c">
       <Filter>Source Files</Filter>
     </ClCompile>
