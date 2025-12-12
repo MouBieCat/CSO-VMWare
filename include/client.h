@@ -60,7 +60,7 @@ namespace cat {
 		 *
 		 * @return A std::string representing the formatted address.
 		 */
-		[[nodiscard]] std::string ipaddress() const noexcept {
+		[[nodiscard]] inline std::string ipaddress() const noexcept {
 			return std::format("{}:{}", server, port);
 		}
 
@@ -69,15 +69,14 @@ namespace cat {
 		 * This may include creating network hosts, initializing internal state, and
 		 * preparing the object for sending/receiving data.
 		 */
-		void install();
+		void connect() const;
 
 		/*
-		 * Establishes a connection from the client to the specified server.
-		 * This function should be called after `install()` has successfully completed.
-		 * It initiates an asynchronous connection; success/failure should be
-		 * confirmed through event handling or a connected status check.
+		 * Polls the ENet server for incoming events such as connections,
+		 * disconnections, and data packets. This function blocks for up to
+		 * 600 ms while waiting for events, then returns control to the caller.
 		 */
-		void connect();
+		void poll() const;
 
 		/*
 		 * Safely shuts down the client or server instance.
@@ -85,11 +84,8 @@ namespace cat {
 		 * This function ensures that all active connections are properly disconnected
 		 * and that any associated ENet resources are released. It is safe to call
 		 * multiple times; subsequent calls will have no effect.
-		 *
-		 * The function is marked noexcept to guarantee it does not throw exceptions
-		 * during destruction or cleanup.
 		 */
-		void shutdown() noexcept;
+		void shutdown() const noexcept;
 	private:
 		// Host name or IP address of the remote server
 		const std::string_view server;
