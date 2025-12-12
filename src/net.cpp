@@ -40,7 +40,7 @@ namespace cat {
 	 */
 	void
 	client::disconnect() const {
-		core::Core_enet_client_disconnect(false);
+		core::Core_enet_client_disconnect();
 		connecting = false;
 	}
 	
