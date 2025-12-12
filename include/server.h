@@ -78,7 +78,7 @@ namespace cat {
 		 * disconnections, and data packets. This function blocks for up to
 		 * 600 ms while waiting for events, then returns control to the caller.
 		 */
-		void poll() const;
+		void poll() const noexcept;
 
 		/*
 		 * Sends a serialized packet to a specific peer.
