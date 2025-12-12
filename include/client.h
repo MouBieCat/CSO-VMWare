@@ -90,15 +90,6 @@ namespace cat {
 		 * during destruction or cleanup.
 		 */
 		void shutdown() noexcept;
-
-		/*
-		 * Destructor for the client class.
-		 * Ensures that any active connections are properly disconnected
-		 * and that ENet resources associated with this client are released.
-		 */
-		~client() noexcept {
-			shutdown();
-		}
 	private:
 		// Host name or IP address of the remote server
 		const std::string_view server;
