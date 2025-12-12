@@ -38,14 +38,6 @@ namespace cat::core {
 	 */
 	static ENetPeer* conn = nullptr;
 
-	/*
-		Global pointer to the currently installed listener interface.
-
-		This pointer references the handler structure that contains user-defined
-		callback functions for connection, disconnection, and packet-receive events.
-	 */
-	static listen_interface listener = nullptr;
-
 
 	/*
 		Determines whether the currently active ENet host
@@ -206,27 +198,25 @@ namespace cat::core {
 	 */
 	void
 	Core_enet_pollevents(std::chrono::milliseconds _Timeout) {
-		assert(listener && "Listener must be installed before locating.");
-
-		enet_uint32 timeout = static_cast<enet_uint32>(_Timeout.count());
 		ENetEvent   event;
+		enet_uint32 timeout = static_cast<enet_uint32>(_Timeout.count());
 
 		while (enet_host_service(host, &event, timeout) > 0) {
-			peer_packet data{ event.peer, nullptr, 0 };
+			peer_data data{ event.peer, nullptr, 0 };
 
 			switch (event.type) {
 			case ENET_EVENT_TYPE_CONNECT:
-				listener->OnConnect(data);
+				OnConnect(data);
 				break;
 
 			case ENET_EVENT_TYPE_DISCONNECT:
-				listener->OnDisconnect(data);
+				OnDisconnect(data);
 				break;
 
 			case ENET_EVENT_TYPE_RECEIVE:
 				data.data = event.packet->data;
 				data.length = event.packet->dataLength;
-				listener->OnReceive(data);
+				OnReceive(data);
 				/* Clean up the packet now that we're done using it. */
 				enet_packet_destroy(event.packet);
 				break;
@@ -252,21 +242,5 @@ namespace cat::core {
 
 		conn = nullptr;
 		server = false;
-	}
-
-	/*
-		Installs the global packet handler interface.
-
-		This function registers a user-provided handler used to process
-		network events (connect, disconnect, receive). The caller must ensure
-		that the provided pointer remains valid for the duration of use.
-
-		@param _Protocol Pointer to a valid packet_handler instance.
-						 Must not be null.
-	 */
-	void
-	InstallListener(listen_interface _Protocol) noexcept {
-		assert(_Protocol && "Listener protocol must not be null.");
-		listener = _Protocol;
 	}
 }

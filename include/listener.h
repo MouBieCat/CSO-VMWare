@@ -28,48 +28,40 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <functional>
 
 namespace cat {
 	/*
 	 * Represents a simplified network packet received from or sent to a peer.
 	 * Encapsulates the peer reference, a pointer to the raw data, and the length of the data.
-	 * This struct abstracts away the underlying ENetEvent or ENetPacket details.
+	 * This struct abstracts away the underlying ENetEvent or ENetPacket details,
+	 * so upper layers don't need to depend on ENet types.
 	 */
-	struct peer_packet {
+	const struct peer_data {
 		void*			peer;	/* Opaque pointer to the remote peer */
 		std::uint8_t*	data;	/* Pointer to the raw packet data */
 		std::size_t		length;	/* Length of the data in bytes */
 	};
 
 	/*
-	 * Handler structure for binding callback functions to network events.
-	 * Allows client or server code to specify behavior for connect, disconnect, and receive events.
+	 * Default event callbacks for the network layer.
+	 * These functions are declared here but must be implemented in client.cpp or server.cpp.
+	 * They define how the application responds to connection, disconnection, and packet reception events.
 	 */
-	struct packet_handler {
-		using const_packet = const peer_packet&;
-
-		std::function<void(const_packet)> OnConnect;	/* Called when a peer successfully connects */
-		std::function<void(const_packet)> OnDisconnect; /* Called when a peer disconnects */
-		std::function<void(const_packet)> OnReceive;	/* Called when a data packet is received from a peer */
-	};
-
-	using listen_interface = packet_handler const*;
-}
-
-namespace cat::core {
+	extern void OnConnect(cat::peer_data _Data);
 
 	/*
-	 * Installs the global packet handler interface.
-	 *
-	 * This function registers a user-provided handler used to process
-	 * network events (connect, disconnect, receive). The caller must ensure
-	 * that the provided pointer remains valid for the duration of use.
-	 *
-	 * @param _Protocol Pointer to a valid packet_handler instance.
-	 *                  Must not be null.
+	 * Default event callbacks for the network layer.
+	 * These functions are declared here but must be implemented in client.cpp or server.cpp.
+	 * They define how the application responds to connection, disconnection, and packet reception events.
 	 */
-	void InstallListener(listen_interface _Protocol) noexcept;
+	extern void OnDisconnect(cat::peer_data _Data);
+
+	/*
+	 * Default event callbacks for the network layer.
+	 * These functions are declared here but must be implemented in client.cpp or server.cpp.
+	 * They define how the application responds to connection, disconnection, and packet reception events.
+	 */
+	extern void OnReceive(cat::peer_data _Data);
 }
 
 #endif // ^^^ !_LISTENER_H_
