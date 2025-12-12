@@ -61,7 +61,7 @@ namespace cat {
 		 *
 		 * @return A std::string representing the formatted address.
 		 */
-		[[nodiscard]] inline std::string ipaddress() const noexcept {
+		[[nodiscard]] std::string ipaddress() const noexcept {
 			return std::format("{}:{}", host, port);
 		}
 
@@ -87,6 +87,14 @@ namespace cat {
 		 * multiple times; subsequent calls will have no effect.
 		 */
 		void shutdown() const noexcept;
+
+		/*
+		 * Checks whether the main event loop of the host is currently active.
+		 *
+		 * @return true if the loop is running and the host is processing events;
+		 *         false if the loop has been stopped or the host is shutting down.
+		 */
+		[[nodiscard]] static bool loop_active() noexcept;
 	private:
 		// Host name or IP address for the listening endpoint
 		const std::string_view host;
