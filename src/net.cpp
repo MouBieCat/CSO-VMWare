@@ -6,11 +6,18 @@
 
 namespace cat {
 	/*
-		Static flag indicating whether the system or host is currently active.
-		Can be used to control the main loop or guard against operations
-		when the system is inactive.
+		Global flag indicating whether the ENet system has been initialized
+		and the host (server or client) has been created. This is shared
+		between server and client code to guard network operations.
 	 */
-	static bool flag = false;
+	static bool setup = false;
+
+	/*
+		Global flag indicating whether a client connection to a remote server
+		is currently active or in progress. Shared between client/server code
+		to track connection state.
+	 */
+	static bool connecting = false;
 
 
 	/*
@@ -23,7 +30,8 @@ namespace cat {
 		core::Core_enet_initialize();
 		core::Core_enet_client_create(1);
 		core::Core_enet_client_connect(server, port, 0);
-		flag = true;
+		setup = true;
+		connecting = true;
 	}
 
 	/*
@@ -33,6 +41,7 @@ namespace cat {
 	void
 	client::disconnect() const {
 		core::Core_enet_client_disconnect(false);
+		connecting = false;
 	}
 	
 	/*
@@ -67,19 +76,9 @@ namespace cat {
 	 */
 	void
 	client::shutdown() const noexcept {
-		flag = false;
+		setup = false;
+		connecting = false;
 		core::Core_enet_deinitialize();
-	}
-
-	/*
-		Checks whether the main event loop of the host is currently active.
-
-		@return true if the loop is running and the host is processing events;
-				false if the loop has been stopped or the host is shutting down.
-	 */
-	bool
-	client::loop_active() noexcept {
-		return flag;
 	}
 
 	/*
@@ -91,7 +90,8 @@ namespace cat {
 	server::connect() const {
 		core::Core_enet_initialize();
 		core::Core_enet_server_create(host, port, 1, 32);
-		flag = true;
+		setup = true;
+		connecting = true;
 	}
 
 	/*
@@ -127,18 +127,8 @@ namespace cat {
 	 */
 	void
 	server::shutdown() const noexcept {
-		flag = false;
 		core::Core_enet_deinitialize();
-	}
-
-	/*
-		Checks whether the main event loop of the host is currently active.
-		
-		@return true if the loop is running and the host is processing events;
-		        false if the loop has been stopped or the host is shutting down.
-	 */
-	bool
-	server::loop_active() noexcept {
-		return flag;
+		setup = false;
+		connecting = false;
 	}
 }
