@@ -2,6 +2,7 @@
 #include "core.h"
 #include "client.h"
 #include "server.h"
+#include "stream.h"
 
 namespace cat {
 	/*
@@ -31,9 +32,21 @@ namespace cat {
 		600 ms while waiting for events, then returns control to the caller.
 	 */
 	void
-	client::poll() const {
+	client::poll() const noexcept {
 		using namespace std::chrono;
 		core::Core_enet_pollevents(600ms);
+	}
+
+	/*
+		Sends a serialized packet over the network.
+		
+		@param _Packet Reference to a packet object to be serialized and sent.
+	 */
+	void
+	client::send(const packet& _Packet) const noexcept {
+		cat::ostream os;
+		_Packet.serialize(os);
+		core::Core_enet_client_send(os.buffer().data(), os.size(), 0, NULL);
 	}
 
 	/*
@@ -78,9 +91,22 @@ namespace cat {
 		600 ms while waiting for events, then returns control to the caller.
 	 */
 	void
-	server::poll() const {
+	server::poll() const noexcept {
 		using namespace std::chrono;
 		core::Core_enet_pollevents(600ms);
+	}
+
+	/*
+		Sends a serialized packet to a specific peer.
+		
+		@param _Peer   Pointer to the target peer connection.
+		@param _Packet Reference to the packet object to serialize and send.
+	 */
+	void
+	server::send(void* _Peer, const packet& _Packet) const noexcept {
+		cat::ostream os;
+		_Packet.serialize(os);
+		core::Core_enet_server_send(_Peer, os.buffer().data(), os.size(), 0, NULL);
 	}
 
 	/*

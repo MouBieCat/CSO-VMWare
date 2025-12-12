@@ -30,6 +30,7 @@
 #include <format>
 #include <string>
 #include <string_view>
+#include "packet.h"
 
 namespace cat {
 	/*
@@ -76,7 +77,14 @@ namespace cat {
 		 * disconnections, and data packets. This function blocks for up to
 		 * 600 ms while waiting for events, then returns control to the caller.
 		 */
-		void poll() const;
+		void poll() const noexcept;
+
+		/*
+		 * Sends a serialized packet over the network.
+		 * 
+		 * @param _Packet Reference to a packet object to be serialized and sent.
+		 */
+		void send(const packet& _Packet) const noexcept;
 
 		/*
 		 * Safely shuts down the client or server instance.

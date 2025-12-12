@@ -30,6 +30,7 @@
 #include <format>
 #include <string>
 #include <string_view>
+#include "packet.h"
 
 namespace cat {
 	/*
@@ -78,6 +79,14 @@ namespace cat {
 		 * 600 ms while waiting for events, then returns control to the caller.
 		 */
 		void poll() const;
+
+		/*
+		 * Sends a serialized packet to a specific peer.
+		 *
+		 * @param _Peer   Pointer to the target peer connection.
+		 * @param _Packet Reference to the packet object to serialize and send.
+		 */
+		void send(void* _Peer, const packet& _Packet) const noexcept;
 
 		/*
 		 * Safely shuts down the client or server instance.
