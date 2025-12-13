@@ -165,7 +165,7 @@ namespace cat::core {
 		}
 
 		ENetPeer* peer = static_cast<ENetPeer*>(_Peer);
-		enet_peer_disconnect(peer, 0);
+		enet_peer_disconnect_now(peer, 0);
 	}
 
 	/*
@@ -183,7 +183,7 @@ namespace cat::core {
 			return;
 		}
 
-		enet_peer_disconnect(conn, 0);
+		enet_peer_disconnect_now(conn, 0);
 		conn = nullptr;
 	}
 
